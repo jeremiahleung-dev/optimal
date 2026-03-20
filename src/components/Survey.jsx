@@ -1,12 +1,12 @@
 import { useState, useCallback } from 'react'
 import { questions } from '../data/questions'
 import QuestionCard from './QuestionCard'
-import PixelCardProgress from './PixelCardProgress'
+import WalletShuffle from './WalletShuffle'
 
 export default function Survey({ onComplete }) {
   const [index, setIndex] = useState(0)
   const [answers, setAnswers] = useState({})
-  const [animState, setAnimState] = useState('idle') // idle | out | in
+  const [animState, setAnimState] = useState('idle')
 
   const handleAnswer = useCallback((optionId) => {
     const questionId = questions[index].id
@@ -14,9 +14,7 @@ export default function Survey({ onComplete }) {
 
     if (index === questions.length - 1) {
       setAnimState('out')
-      setTimeout(() => {
-        onComplete(newAnswers)
-      }, 340)
+      setTimeout(() => onComplete(newAnswers), 340)
       return
     }
 
@@ -46,9 +44,9 @@ export default function Survey({ onComplete }) {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '100px 24px 40px',
+      padding: '80px 24px 40px',
     }}>
-      <PixelCardProgress current={index + 1} total={questions.length} />
+      <WalletShuffle />
 
       <QuestionCard
         question={questions[index]}
