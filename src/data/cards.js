@@ -1,5 +1,5 @@
 // Credit score tier ordering for comparison
-const SCORE_ORDER = { poor: 0, fair: 1, good: 2, very_good: 3, excellent: 4 }
+export const SCORE_ORDER = { poor: 0, fair: 1, good: 2, very_good: 3, excellent: 4 }
 
 export const cards = [
   // ── Secured / Credit Building ──────────────────────────────────────────────
@@ -345,4 +345,3 @@ export const cards = [
   },
 ]
 
-export const SCORE_ORDER = { poor: 0, fair: 1, good: 2, very_good: 3, excellent: 4 }
