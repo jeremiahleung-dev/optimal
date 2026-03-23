@@ -11,12 +11,11 @@ export default function Results({ recommendations, answers, onRestart, onPrivacy
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{
         flex: 1,
-        maxWidth: 720,
+        maxWidth: 760,
         width: '100%',
         margin: '0 auto',
         padding: '100px 24px 48px',
       }}>
-        {/* Header */}
         <div style={{
           marginBottom: 36,
           animation: 'fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both',
@@ -36,11 +35,11 @@ export default function Results({ recommendations, answers, onRestart, onPrivacy
             fontSize: '0.95rem',
             color: 'var(--text-secondary)',
           }}>
-            Ranked by how well they match your profile. Tap any card to see details.
+            Ranked by how well they match your profile. Tap any card to see details and reviews.
           </p>
         </div>
 
-        {/* FTC disclosure */}
+        {/* Disclosure */}
         <div style={{
           background: 'var(--surface)',
           border: '1px solid var(--card-border)',
@@ -63,7 +62,6 @@ export default function Results({ recommendations, answers, onRestart, onPrivacy
           </p>
         </div>
 
-        {/* Card list */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {recommendations.map((card, i) => (
             <ResultCard
@@ -85,7 +83,6 @@ export default function Results({ recommendations, answers, onRestart, onPrivacy
           ))}
         </div>
 
-        {/* Restart */}
         <div style={{ textAlign: 'center', marginTop: 48 }}>
           <button
             onClick={onRestart}
@@ -119,6 +116,128 @@ export default function Results({ recommendations, answers, onRestart, onPrivacy
   )
 }
 
+// ── Stars ──────────────────────────────────────────────────────────────────
+function Stars({ rating }) {
+  return (
+    <div style={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+      {[1, 2, 3, 4, 5].map(n => {
+        const fill = Math.min(1, Math.max(0, rating - (n - 1)))
+        return (
+          <div key={n} style={{ position: 'relative', width: 14, height: 14 }}>
+            {/* Empty star */}
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 1l1.5 4H13L9.5 8l1.5 4L7 10l-4 2 1.5-4L1 5h4.5z"
+                stroke="var(--text-muted)" strokeWidth="1" fill="none" />
+            </svg>
+            {/* Filled star — clipped to fill% */}
+            {fill > 0 && (
+              <div style={{
+                position: 'absolute', inset: 0,
+                overflow: 'hidden', width: `${fill * 100}%`,
+              }}>
+                <svg width="14" height="14" viewBox="0 0 14 14">
+                  <path d="M7 1l1.5 4H13L9.5 8l1.5 4L7 10l-4 2 1.5-4L1 5h4.5z"
+                    fill="var(--accent)" />
+                </svg>
+              </div>
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+// ── Review panel ───────────────────────────────────────────────────────────
+function ReviewPanel({ card }) {
+  const [hovered, setHovered] = useState(false)
+
+  if (!card.rating) return null
+
+  return (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 16,
+    }}>
+      {/* Rating header */}
+      <div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+          <Stars rating={card.rating} />
+          <span style={{
+            fontFamily: 'var(--font)',
+            fontSize: '1rem',
+            fontWeight: 600,
+            color: 'var(--text-primary)',
+          }}>
+            {card.rating.toFixed(1)}
+          </span>
+          <span style={{
+            fontFamily: 'var(--font)',
+            fontSize: '0.78rem',
+            color: 'var(--text-muted)',
+          }}>
+            / 5
+          </span>
+        </div>
+        <p style={{
+          fontFamily: 'var(--font)',
+          fontSize: '0.75rem',
+          color: 'var(--text-muted)',
+        }}>
+          {card.ratingCount} reviews · {card.ratingSource}
+        </p>
+      </div>
+
+      {/* Review snippets */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {card.reviewHighlights?.map((highlight, i) => (
+          <div key={i} style={{
+            background: 'var(--surface)',
+            border: '1px solid var(--card-border)',
+            borderRadius: 10,
+            padding: '12px 14px',
+          }}>
+            <p style={{
+              fontFamily: 'var(--font)',
+              fontSize: '0.82rem',
+              color: 'var(--text-secondary)',
+              lineHeight: 1.6,
+            }}>
+              "{highlight}"
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/* Read more link */}
+      {card.reviewUrl && (
+        <a
+          href={card.reviewUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 5,
+            fontFamily: 'var(--font)',
+            fontSize: '0.82rem',
+            color: hovered ? 'var(--accent-hover)' : 'var(--accent)',
+            textDecoration: 'none',
+            transition: 'color 0.2s',
+          }}
+        >
+          Read all reviews on {card.ratingSource}
+          <span style={{ fontSize: '0.75rem' }}>↗</span>
+        </a>
+      )}
+    </div>
+  )
+}
+
+// ── Result card ────────────────────────────────────────────────────────────
 function ResultCard({ card, rank, answers, isExpanded, onToggle }) {
   const reasons = getMatchReasons(card, answers)
   const [hovered, setHovered] = useState(false)
@@ -140,25 +259,14 @@ function ResultCard({ card, rank, answers, isExpanded, onToggle }) {
       onMouseLeave={() => setHovered(false)}
     >
       {/* Collapsed row */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 16,
-        padding: '20px 20px',
-      }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '20px 20px' }}>
         {/* Rank */}
         <div style={{
-          flexShrink: 0,
-          width: 30,
-          height: 30,
-          borderRadius: '50%',
+          flexShrink: 0, width: 30, height: 30, borderRadius: '50%',
           background: rank === 0 ? 'var(--accent-dim)' : 'var(--surface)',
           border: `1px solid ${rank === 0 ? 'var(--accent)' : 'var(--card-border)'}`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontFamily: 'var(--font)',
-          fontSize: '0.82rem',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontFamily: 'var(--font)', fontSize: '0.82rem',
           color: rank === 0 ? 'var(--accent)' : 'var(--text-muted)',
         }}>
           {rank + 1}
@@ -167,63 +275,50 @@ function ResultCard({ card, rank, answers, isExpanded, onToggle }) {
         {/* Name + tag */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 3 }}>
-            <span style={{
-              fontFamily: 'var(--font)',
-              fontSize: '1.05rem',
-              fontWeight: 500,
-              color: 'var(--text-primary)',
-            }}>
+            <span style={{ fontFamily: 'var(--font)', fontSize: '1.05rem', fontWeight: 500, color: 'var(--text-primary)' }}>
               {card.name}
             </span>
             {rank === 0 && (
               <span style={{
-                fontFamily: 'var(--font)',
-                fontSize: '0.68rem',
-                color: 'var(--accent)',
-                border: '1px solid var(--accent)',
-                borderRadius: 20,
-                padding: '1px 8px',
-                letterSpacing: '0.06em',
+                fontFamily: 'var(--font)', fontSize: '0.68rem', color: 'var(--accent)',
+                border: '1px solid var(--accent)', borderRadius: 20, padding: '1px 8px', letterSpacing: '0.06em',
               }}>
                 Top Pick
               </span>
             )}
           </div>
-          <div style={{
-            fontFamily: 'var(--font)',
-            fontSize: '0.82rem',
-            color: 'var(--text-secondary)',
-          }}>
-            {card.tag}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+            <span style={{ fontFamily: 'var(--font)', fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+              {card.tag}
+            </span>
+            {card.rating && (
+              <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <Stars rating={card.rating} />
+                <span style={{ fontFamily: 'var(--font)', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                  {card.rating.toFixed(1)}
+                </span>
+              </span>
+            )}
           </div>
         </div>
 
         {/* Fee + issuer */}
         <div style={{ flexShrink: 0, textAlign: 'right' }}>
           <div style={{
-            fontFamily: 'var(--font)',
-            fontSize: '0.9rem',
-            fontWeight: 500,
+            fontFamily: 'var(--font)', fontSize: '0.9rem', fontWeight: 500,
             color: card.annualFee === 0 ? 'var(--text-secondary)' : 'var(--text-primary)',
           }}>
             {card.annualFee === 0 ? 'No fee' : `$${card.annualFee}/yr`}
           </div>
-          <div style={{
-            fontFamily: 'var(--font)',
-            fontSize: '0.72rem',
-            color: 'var(--text-muted)',
-          }}>
+          <div style={{ fontFamily: 'var(--font)', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
             {card.issuer}
           </div>
         </div>
 
         {/* Chevron */}
         <div style={{
-          flexShrink: 0,
-          color: 'var(--text-muted)',
-          fontSize: '0.85rem',
-          transform: isExpanded ? 'rotate(180deg)' : 'none',
-          transition: 'transform 0.25s ease',
+          flexShrink: 0, color: 'var(--text-muted)', fontSize: '0.85rem',
+          transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.25s ease',
         }}>
           ↓
         </div>
@@ -234,13 +329,9 @@ function ResultCard({ card, rank, answers, isExpanded, onToggle }) {
         <div style={{ padding: '0 20px 16px', display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {reasons.map((r, i) => (
             <span key={i} style={{
-              fontFamily: 'var(--font)',
-              fontSize: '0.75rem',
-              color: 'var(--text-secondary)',
-              background: 'var(--surface)',
-              border: '1px solid var(--card-border)',
-              borderRadius: 20,
-              padding: '2px 10px',
+              fontFamily: 'var(--font)', fontSize: '0.75rem', color: 'var(--text-secondary)',
+              background: 'var(--surface)', border: '1px solid var(--card-border)',
+              borderRadius: 20, padding: '2px 10px',
             }}>
               {r}
             </span>
@@ -258,84 +349,72 @@ function ResultCard({ card, rank, answers, isExpanded, onToggle }) {
           }}
           onClick={e => e.stopPropagation()}
         >
-          {/* Visual card */}
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 28 }}>
-            <CardVisual card={card} />
+          <div className="card-detail-grid">
+            {/* Left column */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <CardVisual card={card} />
+              </div>
+
+              <Detail label="Rewards" value={card.rewards} />
+
+              {card.signupBonus && card.signupBonus !== 'None' && (
+                <Detail label="Welcome Offer" value={card.signupBonus} />
+              )}
+
+              <div>
+                <Label>Key Benefits</Label>
+                <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 7 }}>
+                  {card.keyBenefits.map((b, i) => (
+                    <li key={i} style={{
+                      display: 'flex', gap: 10,
+                      fontFamily: 'var(--font)', fontSize: '0.9rem',
+                      color: 'var(--text-primary)', lineHeight: 1.5,
+                    }}>
+                      <span style={{ color: 'var(--accent)', flexShrink: 0 }}>—</span>
+                      {b}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {card.applyUrl && (
+                <>
+                  <a
+                    href={card.applyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => trackEvent(Events.APPLY_CLICKED, {
+                      card_id: card.id, card_name: card.name, issuer: card.issuer,
+                    })}
+                    onMouseEnter={() => setApplyHovered(true)}
+                    onMouseLeave={() => setApplyHovered(false)}
+                    style={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                      width: '100%', padding: '13px 24px',
+                      background: applyHovered ? 'var(--accent-hover)' : 'var(--accent)',
+                      color: 'var(--bg)',
+                      fontFamily: 'var(--font)', fontSize: '0.95rem', fontWeight: 500,
+                      letterSpacing: '0.02em', borderRadius: 10, textDecoration: 'none',
+                      transition: 'background 0.2s ease',
+                    }}
+                  >
+                    Apply on {card.issuer}'s website
+                    <span style={{ fontSize: '0.85rem' }}>↗</span>
+                  </a>
+                  <p style={{
+                    fontFamily: 'var(--font)', fontSize: '0.72rem', color: 'var(--text-muted)',
+                    textAlign: 'center', lineHeight: 1.5, marginTop: -12,
+                  }}>
+                    You'll be redirected to {card.issuer}'s secure site. Approval is at the issuer's discretion.
+                  </p>
+                </>
+              )}
+            </div>
+
+            {/* Right column — Reviews */}
+            <ReviewPanel card={card} />
           </div>
-
-          <Detail label="Rewards" value={card.rewards} />
-
-          {card.signupBonus && card.signupBonus !== 'None' && (
-            <Detail label="Welcome Offer" value={card.signupBonus} />
-          )}
-
-          <div style={{ marginBottom: 24 }}>
-            <Label>Key Benefits</Label>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 7 }}>
-              {card.keyBenefits.map((b, i) => (
-                <li key={i} style={{
-                  display: 'flex',
-                  gap: 10,
-                  fontFamily: 'var(--font)',
-                  fontSize: '0.9rem',
-                  color: 'var(--text-primary)',
-                  lineHeight: 1.5,
-                }}>
-                  <span style={{ color: 'var(--accent)', flexShrink: 0 }}>—</span>
-                  {b}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Apply Now CTA */}
-          {card.applyUrl && (
-            <a
-              href={card.applyUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackEvent(Events.APPLY_CLICKED, {
-                card_id: card.id,
-                card_name: card.name,
-                rank: card.rank,
-                issuer: card.issuer,
-              })}
-              onMouseEnter={() => setApplyHovered(true)}
-              onMouseLeave={() => setApplyHovered(false)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 8,
-                width: '100%',
-                padding: '13px 24px',
-                background: applyHovered ? 'var(--accent-hover)' : 'var(--accent)',
-                color: 'var(--bg)',
-                fontFamily: 'var(--font)',
-                fontSize: '0.95rem',
-                fontWeight: 500,
-                letterSpacing: '0.02em',
-                borderRadius: 10,
-                textDecoration: 'none',
-                transition: 'background 0.2s ease',
-                marginTop: 8,
-              }}
-            >
-              Apply on {card.issuer}'s website
-              <span style={{ fontSize: '0.85rem' }}>↗</span>
-            </a>
-          )}
-
-          <p style={{
-            fontFamily: 'var(--font)',
-            fontSize: '0.72rem',
-            color: 'var(--text-muted)',
-            textAlign: 'center',
-            marginTop: 10,
-            lineHeight: 1.5,
-          }}>
-            You'll be redirected to {card.issuer}'s secure site. Approval is determined by the issuer.
-          </p>
         </div>
       )}
     </div>
@@ -345,12 +424,8 @@ function ResultCard({ card, rank, answers, isExpanded, onToggle }) {
 function Label({ children }) {
   return (
     <div style={{
-      fontFamily: 'var(--font)',
-      fontSize: '0.68rem',
-      letterSpacing: '0.14em',
-      color: 'var(--text-muted)',
-      textTransform: 'uppercase',
-      marginBottom: 7,
+      fontFamily: 'var(--font)', fontSize: '0.68rem', letterSpacing: '0.14em',
+      color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 7,
     }}>
       {children}
     </div>
@@ -359,14 +434,9 @@ function Label({ children }) {
 
 function Detail({ label, value }) {
   return (
-    <div style={{ marginBottom: 20 }}>
+    <div>
       <Label>{label}</Label>
-      <p style={{
-        fontFamily: 'var(--font)',
-        fontSize: '0.92rem',
-        color: 'var(--text-primary)',
-        lineHeight: 1.6,
-      }}>
+      <p style={{ fontFamily: 'var(--font)', fontSize: '0.92rem', color: 'var(--text-primary)', lineHeight: 1.6 }}>
         {value}
       </p>
     </div>
