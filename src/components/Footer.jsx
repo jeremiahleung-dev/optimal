@@ -16,8 +16,7 @@ export default function Footer({ onPrivacy }) {
         lineHeight: 1.6,
         maxWidth: 560,
       }}>
-        Wallet Wiz is an independent comparison tool. We may earn a commission when you apply for a card through our links — at no cost to you.
-        Recommendations are not financial advice. Always review the full terms on the issuer's website before applying.
+        Card links are provided for reference only. We do not earn any commission. Recommendations are not financial advice. Always review the full terms on the issuer's website before applying.
       </p>
       <div style={{ display: 'flex', gap: 20, flexShrink: 0 }}>
         <button

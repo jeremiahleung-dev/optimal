@@ -50,7 +50,7 @@ export default function App() {
 
   return (
     <>
-      <Header theme={theme} onToggleTheme={handleToggleTheme} />
+      <Header theme={theme} onToggleTheme={handleToggleTheme} onHome={handleRestart} />
 
       {screen === 'welcome' && (
         <Welcome onStart={handleStart} onPrivacy={handleOpenPrivacy} />

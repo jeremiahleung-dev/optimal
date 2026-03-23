@@ -141,8 +141,8 @@ export default function PrivacyModal({ onClose }) {
             </ul>
           </Section>
 
-          <Section title="Affiliate disclosure">
-            <p>Wallet Wiz is an independent comparison service. Some card recommendations include links to issuer application pages. We may receive compensation when you apply for or are approved for a card through these links. This compensation does not influence our recommendations — cards are ranked solely by how well they match your stated profile.</p>
+          <Section title="Card links">
+            <p>Card recommendations include links to issuer application pages for your convenience. These links are provided for reference only — Wallet Wiz does not earn any commission or compensation of any kind when you click or apply through them.</p>
             <br />
             <p>You should always review the full terms, conditions, and current offers directly on the issuer's website before applying.</p>
           </Section>

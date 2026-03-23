@@ -1,6 +1,4 @@
-import { useEffect, useState } from 'react'
-
-export default function Header({ theme, onToggleTheme }) {
+export default function Header({ theme, onToggleTheme, onHome }) {
   return (
     <header style={{
       position: 'fixed',
@@ -14,17 +12,31 @@ export default function Header({ theme, onToggleTheme }) {
       padding: '24px 36px',
       pointerEvents: 'none',
     }}>
-      <div style={{ pointerEvents: 'auto' }}>
-        <span style={{
-          fontFamily: 'var(--font)',
-          fontSize: '1.25rem',
-          fontWeight: 500,
+      <button
+        onClick={onHome}
+        aria-label="Go to home"
+        style={{
+          pointerEvents: 'auto',
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          padding: 4,
           color: 'var(--accent)',
-          letterSpacing: '0.01em',
-        }}>
-          Wallet Wiz
-        </span>
-      </div>
+          display: 'flex',
+          alignItems: 'center',
+          transition: 'opacity 0.2s',
+          borderRadius: 6,
+        }}
+        onMouseEnter={e => e.currentTarget.style.opacity = '0.7'}
+        onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+      >
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="2" y="6" width="20" height="14" rx="3" />
+          <path d="M2 10h20" />
+          <path d="M16 14h.01" strokeWidth="2.5" />
+          <path d="M2 6l4-3h12l4 3" />
+        </svg>
+      </button>
 
       <button
         onClick={onToggleTheme}

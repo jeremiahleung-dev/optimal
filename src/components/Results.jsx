@@ -59,7 +59,7 @@ export default function Results({ recommendations, answers, onRestart, onPrivacy
             color: 'var(--text-muted)',
             lineHeight: 1.55,
           }}>
-            We may earn a commission if you apply through our links — at no cost to you. This does not affect our rankings.
+            Card links are provided for reference only. We do not earn any commission. Rankings are based purely on your profile.
           </p>
         </div>
 
