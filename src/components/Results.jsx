@@ -4,7 +4,21 @@ import { trackEvent, Events } from '../utils/track'
 import CardVisual from './CardVisual'
 import Footer from './Footer'
 
-export default function Results({ recommendations, answers, onRestart, onPrivacy }) {
+// ── Bookmark icon ──────────────────────────────────────────────────────────
+function BookmarkIcon({ filled }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+    >
+      {filled
+        ? <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" fill="currentColor" />
+        : <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+      }
+    </svg>
+  )
+}
+
+export default function Results({ recommendations, answers, savedIds, onToggleSave, onCompare, onRestart, onPrivacy }) {
   const [expanded, setExpanded] = useState(0)
 
   return (
@@ -37,7 +51,7 @@ export default function Results({ recommendations, answers, onRestart, onPrivacy
             fontWeight: 400,
             color: 'var(--text-secondary)',
           }}>
-            Ranked by how well they match your profile. Tap any card to see details and reviews.
+            Ranked by how well they match your profile. Tap any card to see details — bookmark to compare.
           </p>
         </div>
 
@@ -73,6 +87,8 @@ export default function Results({ recommendations, answers, onRestart, onPrivacy
               rank={i}
               answers={answers}
               isExpanded={expanded === i}
+              isSaved={savedIds?.includes(card.id) ?? false}
+              onToggleSave={() => onToggleSave?.(card.id)}
               onToggle={() => {
                 const opening = expanded !== i
                 setExpanded(opening ? i : -1)
@@ -116,6 +132,55 @@ export default function Results({ recommendations, answers, onRestart, onPrivacy
       </div>
 
       <Footer onPrivacy={onPrivacy} />
+
+      {/* Sticky compare bar */}
+      {savedIds?.length > 0 && (
+        <div style={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          padding: `12px 20px max(16px, env(safe-area-inset-bottom))`,
+          background: 'var(--card-bg)',
+          borderTop: '1px solid var(--card-border)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 12,
+          zIndex: 50,
+          boxShadow: '0 -4px 24px rgba(0,0,0,0.08)',
+          animation: 'fadeUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) both',
+        }}>
+          <span style={{
+            fontFamily: 'var(--font)',
+            fontSize: '0.88rem',
+            fontWeight: 500,
+            color: 'var(--text-secondary)',
+          }}>
+            {savedIds.length} {savedIds.length === 1 ? 'card' : 'cards'} saved
+          </span>
+          <button
+            onClick={onCompare}
+            style={{
+              fontFamily: 'var(--font)',
+              fontSize: '0.92rem',
+              fontWeight: 600,
+              color: '#FFFFFF',
+              background: 'var(--accent)',
+              border: 'none',
+              borderRadius: 10,
+              padding: '10px 22px',
+              cursor: 'pointer',
+              transition: 'background 0.2s',
+              minHeight: 44,
+            }}
+            onMouseEnter={e => e.currentTarget.style.background = 'var(--accent-hover)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'var(--accent)'}
+          >
+            Compare →
+          </button>
+        </div>
+      )}
     </div>
   )
 }
@@ -206,10 +271,11 @@ function ReviewPanel({ card }) {
 }
 
 // ── Result card ────────────────────────────────────────────────────────────
-function ResultCard({ card, rank, answers, isExpanded, onToggle }) {
+function ResultCard({ card, rank, answers, isExpanded, isSaved, onToggleSave, onToggle }) {
   const reasons = getMatchReasons(card, answers)
   const [hovered, setHovered] = useState(false)
   const [applyHovered, setApplyHovered] = useState(false)
+  const [saveHovered, setSaveHovered] = useState(false)
 
   return (
     <div
@@ -286,6 +352,34 @@ function ResultCard({ card, rank, answers, isExpanded, onToggle }) {
             {card.issuer}
           </div>
         </div>
+
+        {/* Bookmark button */}
+        <button
+          onClick={e => { e.stopPropagation(); onToggleSave() }}
+          onMouseEnter={() => setSaveHovered(true)}
+          onMouseLeave={() => setSaveHovered(false)}
+          aria-label={isSaved ? `Remove ${card.name} from saved` : `Save ${card.name}`}
+          style={{
+            flexShrink: 0,
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '10px 6px',
+            minWidth: 44,
+            minHeight: 44,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: isSaved
+              ? 'var(--accent)'
+              : saveHovered
+              ? 'var(--text-secondary)'
+              : 'var(--text-muted)',
+            transition: 'color 0.2s',
+          }}
+        >
+          <BookmarkIcon filled={isSaved} />
+        </button>
 
         {/* Chevron */}
         <div style={{

@@ -3,8 +3,10 @@ import Header from './components/Header'
 import Welcome from './components/Welcome'
 import Survey from './components/Survey'
 import Results from './components/Results'
+import SavedCards from './components/SavedCards'
 import PrivacyModal from './components/PrivacyModal'
 import { getRecommendations } from './utils/recommend'
+import { getSavedIds, toggleSaved, clearSaved } from './utils/savedCards'
 import { trackEvent, Events } from './utils/track'
 
 export default function App() {
@@ -14,6 +16,7 @@ export default function App() {
   const [recommendations, setRecommendations] = useState([])
   const [answers, setAnswers] = useState({})
   const [showPrivacy, setShowPrivacy] = useState(false)
+  const [savedIds, setSavedIds] = useState(() => getSavedIds())
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -53,6 +56,28 @@ export default function App() {
     setShowPrivacy(true)
   }
 
+  const handleToggleSave = (cardId) => {
+    const isSaving = !savedIds.includes(cardId)
+    const updated = toggleSaved(cardId, savedIds)
+    setSavedIds(updated)
+    trackEvent(isSaving ? Events.CARD_SAVED : Events.CARD_UNSAVED, { card_id: cardId })
+  }
+
+  const handleOpenCompare = () => {
+    trackEvent(Events.COMPARE_OPENED, { count: savedIds.length })
+    setScreen('compare')
+  }
+
+  const handleRemoveFromCompare = (cardId) => {
+    const updated = toggleSaved(cardId, savedIds)
+    setSavedIds(updated)
+  }
+
+  const handleClearAll = () => {
+    setSavedIds(clearSaved())
+    setScreen('results')
+  }
+
   return (
     <>
       <Header theme={theme} onToggleTheme={handleToggleTheme} onHome={handleRestart} />
@@ -67,8 +92,19 @@ export default function App() {
         <Results
           recommendations={recommendations}
           answers={answers}
+          savedIds={savedIds}
+          onToggleSave={handleToggleSave}
+          onCompare={handleOpenCompare}
           onRestart={handleRestart}
           onPrivacy={handleOpenPrivacy}
+        />
+      )}
+      {screen === 'compare' && (
+        <SavedCards
+          savedIds={savedIds}
+          onRemove={handleRemoveFromCompare}
+          onClearAll={handleClearAll}
+          onBack={() => setScreen('results')}
         />
       )}
 

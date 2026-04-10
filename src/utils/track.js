@@ -22,4 +22,7 @@ export const Events = {
   APPLY_CLICKED:       'apply_clicked',
   SURVEY_RESTARTED:    'survey_restarted',
   PRIVACY_VIEWED:      'privacy_viewed',
+  CARD_SAVED:          'card_saved',
+  CARD_UNSAVED:        'card_unsaved',
+  COMPARE_OPENED:      'compare_opened',
 }
