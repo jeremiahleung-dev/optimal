@@ -8,32 +8,33 @@
   --font-display: 'Playfair Display', Georgia, serif;
   --font: 'Inter', system-ui, sans-serif;
 
-  /* Light mode — default */
-  --bg: #F9F9FB;
-  --surface: #FFFFFF;
-  --card-bg: #FFFFFF;
-  --card-border: #E4E4EC;
-  --text-primary: #0D0D12;
-  --text-secondary: #6B6B7E;
-  --text-muted: #A8A8B8;
-  --accent: #5B47F5;
-  --accent-dim: rgba(91, 71, 245, 0.08);
-  --accent-hover: #4935E4;
-  --option-bg: #F4F4F9;
-  --option-hover: #EBEBF5;
-  --option-selected: rgba(91, 71, 245, 0.08);
-  --option-border: #E4E4EC;
-  --option-selected-border: #5B47F5;
-  --progress-track: #E4E4EC;
-  --progress-fill: #5B47F5;
-  --shadow: 0 2px 16px rgba(0,0,0,0.06);
-  --shadow-card: 0 8px 40px rgba(0,0,0,0.10);
+  --bg-from: #020812;
+  --bg-to:   #0D2040;
+  --bg: #050D1C;
+  --surface: #0C1528;
+  --card-bg: #101D34;
+  --card-border: #1B2C44;
+  --text-primary: #E5EEFF;
+  --text-secondary: #6E90B0;
+  --text-muted: #344E68;
+  --accent: #4F87E8;
+  --accent-dim: rgba(79, 135, 232, 0.12);
+  --accent-hover: #6A9AEE;
+  --option-bg: #111E34;
+  --option-hover: #15243E;
+  --option-selected: rgba(79, 135, 232, 0.12);
+  --option-border: #1B2C44;
+  --option-selected-border: #4F87E8;
+  --progress-track: #1B2C44;
+  --progress-fill: #4F87E8;
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 8px 48px rgba(0, 0, 0, 0.65);
 }
 
 html, body {
   height: 100%;
   font-family: var(--font);
-  background: var(--bg);
+  background: linear-gradient(170deg, var(--bg-from) 0%, var(--bg-to) 100%) fixed;
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

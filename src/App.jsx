@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Header from './components/Header'
 import Welcome from './components/Welcome'
 import Survey from './components/Survey'
@@ -8,6 +8,7 @@ import PrivacyModal from './components/PrivacyModal'
 import { getRecommendations } from './utils/recommend'
 import { getSavedIds, toggleSaved, clearSaved } from './utils/savedCards'
 import { trackEvent, Events } from './utils/track'
+import { cards as staticCards } from './data/cards'
 
 export default function App() {
   const [screen, setScreen] = useState('welcome')
@@ -16,6 +17,14 @@ export default function App() {
   const [answers, setAnswers] = useState({})
   const [showPrivacy, setShowPrivacy] = useState(false)
   const [savedIds, setSavedIds] = useState(() => getSavedIds())
+  const liveCardsRef = useRef(staticCards)
+
+  useEffect(() => {
+    fetch('/api/cards')
+      .then(res => res.ok ? res.json() : Promise.reject(res.status))
+      .then(data => { liveCardsRef.current = data })
+      .catch(() => { /* silent fallback — liveCardsRef keeps static data */ })
+  }, [])
 
   const handleStart = () => {
     trackEvent(Events.SURVEY_STARTED)
@@ -27,7 +36,7 @@ export default function App() {
   }
 
   const handleSurveyComplete = (surveyAnswers) => {
-    const recs = getRecommendations(surveyAnswers)
+    const recs = getRecommendations(surveyAnswers, liveCardsRef.current)
     setAnswers(surveyAnswers)
     setRecommendations(recs)
     trackEvent(Events.RESULTS_VIEWED, {
