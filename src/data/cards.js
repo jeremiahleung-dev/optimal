@@ -1,4 +1,4 @@
-export const SCORE_ORDER = { poor: 0, fair: 1, good: 2, very_good: 3, excellent: 4 }
+export const SCORE_ORDER = { no_credit: 0, poor: 0, fair: 1, good: 2, very_good: 3, excellent: 4 }
 
 // reviewUrl: NerdWallet review pages — verify periodically as URLs may change
 export const cards = [

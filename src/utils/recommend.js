@@ -9,18 +9,23 @@ export function getRecommendations(answers) {
 
   // Hard filter: annual fee preference
   const feeEligible = eligible.filter(card => {
-    if (annualFee === 'none')   return card.annualFee === 0
-    if (annualFee === 'low')    return card.annualFee <= 100
-    if (annualFee === 'medium') return card.annualFee <= 300
+    if (annualFee === 'none')     return card.annualFee === 0
+    if (annualFee === 'minimal')  return card.annualFee <= 50
+    if (annualFee === 'low')      return card.annualFee <= 100
+    if (annualFee === 'medium')   return card.annualFee <= 300
+    if (annualFee === 'elevated') return card.annualFee <= 550
     return true // 'high' — no limit
   })
+
+  // Balance transfer maps to low_apr cards for scoring purposes
+  const effectiveGoal = goal === 'balance_transfer' ? 'low_apr' : goal
 
   // Score each card
   const scored = feeEligible.map(card => {
     let score = 0
 
     // Goal match (high weight)
-    if (card.goals.includes(goal)) score += 40
+    if (card.goals.includes(effectiveGoal)) score += 40
     // Partial goal overlap for building credit users
     if (goal === 'building_credit' && card.goals.includes('cash_back')) score += 10
 
@@ -28,7 +33,13 @@ export function getRecommendations(answers) {
     if (card.spending.includes(spending)) score += 25
 
     // Lifestyle match (medium weight)
-    if (card.lifestyle.includes(lifestyle)) score += 20
+    if (lifestyle === 'family') {
+      // Family maps to everyday lifestyle cards + grocery/general spending bonus
+      if (card.lifestyle.includes('everyday')) score += 20
+      if (card.spending.includes('groceries') || card.spending.includes('general')) score += 10
+    } else {
+      if (card.lifestyle.includes(lifestyle)) score += 20
+    }
 
     // Prefer cards that closely match (not over-qualify) the credit tier
     const cardScoreVal = SCORE_ORDER[card.minScore]
@@ -40,8 +51,8 @@ export function getRecommendations(answers) {
     // Bonus for no annual fee when on a tight score budget
     if (userScoreVal <= 1 && card.annualFee === 0) score += 10
 
-    // Bonus for credit-building cards when history is short
-    if ((creditAge === 'new' || creditAge === 'building') && card.goals.includes('building_credit')) score += 15
+    // Bonus for credit-building cards when history is short or nonexistent
+    if ((['no_credit', 'new', 'building'].includes(creditAge)) && card.goals.includes('building_credit')) score += 15
 
     // Premium lifestyle bonus for high-fee cards
     if (lifestyle === 'luxury' && card.annualFee >= 395) score += 10
@@ -59,12 +70,14 @@ export function getRecommendations(answers) {
 export function getMatchReasons(card, answers) {
   const reasons = []
 
-  if (card.goals.includes(answers.goal)) {
+  const effectiveGoal = answers.goal === 'balance_transfer' ? 'low_apr' : answers.goal
+  if (card.goals.includes(effectiveGoal)) {
     const labels = {
       cash_back: 'earns strong cash back rewards',
       travel: 'is built for travel rewards',
       building_credit: 'is designed to build your credit profile',
       low_apr: 'offers an introductory 0% APR period',
+      balance_transfer: 'offers a strong balance transfer intro rate',
       premium: 'delivers premium perks and status',
     }
     reasons.push(labels[answers.goal] || 'aligns with your goal')
@@ -82,10 +95,15 @@ export function getMatchReasons(card, answers) {
     reasons.push(labels[answers.spending] || 'matches your spending habits')
   }
 
-  if (card.lifestyle.includes(answers.lifestyle)) {
+  const lifestyleMatch = answers.lifestyle === 'family'
+    ? card.lifestyle.includes('everyday')
+    : card.lifestyle.includes(answers.lifestyle)
+
+  if (lifestyleMatch) {
     const labels = {
       simple: 'is straightforward with no complexity',
       everyday: 'fits naturally into everyday life',
+      family: 'suits a family-focused lifestyle',
       active: 'rewards an active social lifestyle',
       traveler: 'is purpose-built for frequent travelers',
       luxury: 'delivers a luxury card experience',
