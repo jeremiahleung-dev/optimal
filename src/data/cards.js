@@ -528,7 +528,7 @@ export const cards = [
     name: 'American Express® Gold Card',
     issuer: 'American Express',
     network: 'Amex',
-    annualFee: 250,
+    annualFee: 325,
     minScore: 'very_good',
     gradient: ['#1C1400', '#B45309'],
     goals: ['travel', 'cash_back', 'premium'],

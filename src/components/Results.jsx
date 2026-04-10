@@ -14,7 +14,7 @@ export default function Results({ recommendations, answers, onRestart, onPrivacy
         maxWidth: 780,
         width: '100%',
         margin: '0 auto',
-        padding: 'clamp(72px, 18vw, 100px) 20px 48px',
+        padding: 'clamp(24px, 4vw, 48px) 20px 48px',
       }}>
         <div style={{
           marginBottom: 32,

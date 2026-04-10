@@ -3,11 +3,9 @@ import Footer from './Footer'
 
 const steps = [
   { n: '01', label: 'Answer six quick questions about your credit profile and goals' },
-  { n: '02', label: 'Our algorithm scores your profile against 70 cards' },
+  { n: '02', label: 'Our algorithm scores your profile against every card in our database' },
   { n: '03', label: 'Get a ranked list of cards matched specifically to you' },
 ]
-
-const stats = ['6 questions', '70 cards', 'no data stored']
 
 export default function Welcome({ onStart, onPrivacy }) {
   const [hovered, setHovered] = useState(false)
@@ -26,7 +24,7 @@ export default function Welcome({ onStart, onPrivacy }) {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 'clamp(88px, 20vw, 120px) 24px 48px',
+        padding: 'clamp(32px, 6vw, 56px) 24px 48px',
         textAlign: 'center',
       }}>
 
@@ -98,37 +96,11 @@ export default function Welcome({ onStart, onPrivacy }) {
           color: 'var(--text-secondary)',
           maxWidth: 380,
           lineHeight: 1.65,
-          marginBottom: 32,
+          marginBottom: 40,
           animation: 'fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both',
         }}>
           Six questions. A personalized recommendation matched to your credit profile, spending habits, and goals.
         </p>
-
-        {/* Stat pills */}
-        <div style={{
-          display: 'flex',
-          gap: 8,
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-          marginBottom: 36,
-          animation: 'fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both',
-        }}>
-          {stats.map(stat => (
-            <span key={stat} style={{
-              fontFamily: 'var(--font)',
-              fontSize: '0.85rem',
-              fontWeight: 500,
-              color: 'var(--text-secondary)',
-              background: 'var(--surface)',
-              border: '1px solid var(--card-border)',
-              borderRadius: 100,
-              padding: '6px 16px',
-              boxShadow: 'var(--shadow)',
-            }}>
-              {stat}
-            </span>
-          ))}
-        </div>
 
         <button
           onClick={onStart}

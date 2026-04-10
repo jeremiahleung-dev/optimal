@@ -1,22 +1,15 @@
 export default function Header({ theme, onToggleTheme, onHome }) {
   return (
     <header style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      zIndex: 100,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      padding: 'max(16px, env(safe-area-inset-top)) 24px 0',
-      pointerEvents: 'none',
+      padding: 'max(16px, env(safe-area-inset-top)) 24px 12px',
     }}>
       <button
         onClick={onHome}
         aria-label="Go to home"
         style={{
-          pointerEvents: 'auto',
           background: 'none',
           border: 'none',
           cursor: 'pointer',
@@ -38,7 +31,6 @@ export default function Header({ theme, onToggleTheme, onHome }) {
         onClick={onToggleTheme}
         aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
         style={{
-          pointerEvents: 'auto',
           background: 'var(--card-bg)',
           border: '1px solid var(--card-border)',
           borderRadius: '50%',

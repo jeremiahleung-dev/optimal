@@ -50,7 +50,7 @@ export default function Survey({ onComplete }) {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: 'clamp(72px, 18vw, 100px) 20px 48px',
+      padding: 'clamp(32px, 6vw, 56px) 20px 48px',
     }}>
       {/* Segmented progress bar */}
       <div style={{
