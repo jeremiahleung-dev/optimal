@@ -8,33 +8,8 @@
   --font-display: 'Playfair Display', Georgia, serif;
   --font: 'Inter', system-ui, sans-serif;
 
-  /* Light mode — default */
-  --bg-from: #EEF4FF;
-  --bg-to:   #C8DCEF;
-  --bg: #EEF4FF;
-  --surface: #FFFFFF;
-  --card-bg: #FFFFFF;
-  --card-border: #C6D6EB;
-  --text-primary: #0B1A35;
-  --text-secondary: #516278;
-  --text-muted: #8FA3B8;
-  --accent: #1B4FBB;
-  --accent-dim: rgba(27, 79, 187, 0.08);
-  --accent-hover: #153E9A;
-  --option-bg: #EBF1FA;
-  --option-hover: #DDE8F5;
-  --option-selected: rgba(27, 79, 187, 0.08);
-  --option-border: #C6D6EB;
-  --option-selected-border: #1B4FBB;
-  --progress-track: #C6D6EB;
-  --progress-fill: #1B4FBB;
-  --shadow: 0 2px 16px rgba(0, 30, 80, 0.07);
-  --shadow-card: 0 8px 40px rgba(0, 30, 80, 0.12);
-}
-
-:root[data-theme='dark'] {
-  --bg-from: #050D1C;
-  --bg-to:   #0B1A30;
+  --bg-from: #020812;
+  --bg-to:   #0D2040;
   --bg: #050D1C;
   --surface: #0C1528;
   --card-bg: #101D34;
@@ -61,7 +36,6 @@ html, body {
   font-family: var(--font);
   background: linear-gradient(170deg, var(--bg-from) 0%, var(--bg-to) 100%) fixed;
   color: var(--text-primary);
-  transition: color 0.3s ease;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

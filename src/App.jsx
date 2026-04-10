@@ -9,7 +9,6 @@ import { trackEvent, Events } from './utils/track'
 import { cards as staticCards } from './data/cards'
 
 export default function App() {
-  const [theme, setTheme] = useState('dark')
   const [screen, setScreen] = useState('welcome')
   const [recommendations, setRecommendations] = useState([])
   const [answers, setAnswers] = useState({})
@@ -17,17 +16,11 @@ export default function App() {
   const liveCardsRef = useRef(staticCards)
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
-  }, [theme])
-
-  useEffect(() => {
     fetch('/api/cards')
       .then(res => res.ok ? res.json() : Promise.reject(res.status))
       .then(data => { liveCardsRef.current = data })
       .catch(() => { /* silent fallback — liveCardsRef keeps static data */ })
   }, [])
-
-  const handleToggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark')
 
   const handleStart = () => {
     trackEvent(Events.SURVEY_STARTED)
@@ -59,7 +52,7 @@ export default function App() {
 
   return (
     <>
-      <Header theme={theme} onToggleTheme={handleToggleTheme} onHome={handleRestart} />
+      <Header onHome={handleRestart} />
 
       {screen === 'welcome' && (
         <Welcome onStart={handleStart} onPrivacy={handleOpenPrivacy} />
