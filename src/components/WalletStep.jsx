@@ -13,6 +13,47 @@ const ISSUER_ORDER = [
   'Goldman Sachs',
 ]
 
+const WALLET_KEY = 'optimal_wallet'
+
+function loadWallet() {
+  try { return new Set(JSON.parse(localStorage.getItem(WALLET_KEY) || '[]')) } catch { return new Set() }
+}
+
+function saveWallet(set) {
+  try { localStorage.setItem(WALLET_KEY, JSON.stringify([...set])) } catch {}
+}
+
+// Strip trademark symbols and issuer prefix noise for display in the dropdown.
+function walletDisplayName(name, issuer) {
+  let n = name.replace(/[®℠™]/g, '').replace(/\s+/g, ' ').trim()
+
+  // Strip " from Amex" suffix
+  n = n.replace(/\s+from\s+Amex$/i, '')
+  // Strip " by Citi" suffix
+  n = n.replace(/\s+by\s+Citi$/i, '')
+  // Strip leading "The "
+  n = n.replace(/^The\s+/i, '')
+
+  // Strip issuer prefix, but only when the remainder starts with an uppercase letter
+  // (avoids mangling "Discover it Secured" → "it Secured")
+  const escaped = issuer.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const prefixRe = new RegExp('^' + escaped + '\\s+', 'i')
+  if (prefixRe.test(n)) {
+    const rest = n.replace(prefixRe, '')
+    if (/^[A-Z]/.test(rest)) n = rest
+  }
+
+  // Strip trailing network/type noise
+  n = n
+    .replace(/\s+Visa\s+Infinite\s+Card$/i, '')
+    .replace(/\s+Visa\s+Signature\s+Card$/i, '')
+    .replace(/\s+Visa\s+Signature$/i, '')
+    .replace(/\s+Credit\s+Card$/i, '')
+    .trim()
+
+  return n
+}
+
 const animClassMap = {
   idle: '',
   out: 'anim-slide-out-left',
@@ -21,7 +62,7 @@ const animClassMap = {
   'in-left': 'anim-slide-in-left',
 }
 
-// ── Custom checkbox ─────────────────────────────────────────────────────────
+// ── Custom checkbox row ──────────────────────────────────────────────────────
 function Checkbox({ checked, onChange, label, subtle }) {
   return (
     <label style={{
@@ -63,7 +104,7 @@ function Checkbox({ checked, onChange, label, subtle }) {
   )
 }
 
-// ── Issuer accordion row ─────────────────────────────────────────────────────
+// ── Issuer accordion ─────────────────────────────────────────────────────────
 function IssuerAccordion({ issuer, cards, selected, onToggle }) {
   const [open, setOpen] = useState(false)
   const selectedCount = cards.filter(c => selected.has(c.id)).length
@@ -75,7 +116,6 @@ function IssuerAccordion({ issuer, cards, selected, onToggle }) {
       overflow: 'hidden',
       marginBottom: 8,
     }}>
-      {/* Header row */}
       <button
         onClick={() => setOpen(o => !o)}
         style={{
@@ -126,20 +166,17 @@ function IssuerAccordion({ issuer, cards, selected, onToggle }) {
         </div>
       </button>
 
-      {/* Card list */}
       {open && (
         <div style={{ borderTop: '1px solid var(--card-border)' }}>
           {cards.map((card, i) => (
             <div
               key={card.id}
-              style={{
-                borderTop: i > 0 ? '1px solid var(--card-border)' : 'none',
-              }}
+              style={{ borderTop: i > 0 ? '1px solid var(--card-border)' : 'none' }}
             >
               <Checkbox
                 checked={selected.has(card.id)}
                 onChange={() => onToggle(card.id)}
-                label={card.name}
+                label={walletDisplayName(card.name, issuer)}
               />
             </div>
           ))}
@@ -151,7 +188,7 @@ function IssuerAccordion({ issuer, cards, selected, onToggle }) {
 
 // ── Main component ───────────────────────────────────────────────────────────
 export default function WalletStep({ animState, onComplete }) {
-  const [selected, setSelected] = useState(new Set())
+  const [selected, setSelected] = useState(loadWallet)
   const [noneOfAbove, setNoneOfAbove] = useState(false)
   const [otherText, setOtherText] = useState('')
 
@@ -172,6 +209,7 @@ export default function WalletStep({ animState, onComplete }) {
       const next = new Set(prev)
       if (next.has(id)) next.delete(id)
       else next.add(id)
+      saveWallet(next)
       return next
     })
   }
@@ -179,7 +217,10 @@ export default function WalletStep({ animState, onComplete }) {
   const toggleNone = () => {
     const next = !noneOfAbove
     setNoneOfAbove(next)
-    if (next) setSelected(new Set())
+    if (next) {
+      setSelected(new Set())
+      saveWallet(new Set())
+    }
   }
 
   const handleContinue = () => onComplete(Array.from(selected))
@@ -227,10 +268,7 @@ export default function WalletStep({ animState, onComplete }) {
         ))}
 
         {/* Divider */}
-        <div style={{
-          borderTop: '1px solid var(--card-border)',
-          margin: '20px 0',
-        }} />
+        <div style={{ borderTop: '1px solid var(--card-border)', margin: '20px 0' }} />
 
         {/* None of the above */}
         <div style={{
@@ -246,7 +284,7 @@ export default function WalletStep({ animState, onComplete }) {
           />
         </div>
 
-        {/* Other text input */}
+        {/* Other */}
         <div style={{
           border: '1px solid var(--card-border)',
           borderRadius: 12,
@@ -327,7 +365,7 @@ export default function WalletStep({ animState, onComplete }) {
           onMouseEnter={e => e.currentTarget.style.background = 'var(--accent-hover)'}
           onMouseLeave={e => e.currentTarget.style.background = 'var(--accent)'}
         >
-          {count > 0 ? 'Continue →' : 'Continue →'}
+          Continue →
         </button>
       </div>
     </>
