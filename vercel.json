@@ -2,7 +2,6 @@
   "crons": [{ "path": "/api/cron/scrape", "schedule": "0 2 * * *" }],
   "functions": {
     "api/cron/scrape.js": { "maxDuration": 300 },
-    "api/cards.js": { "runtime": "edge" },
     "api/admin/update.js": { "maxDuration": 10 }
   }
 }
