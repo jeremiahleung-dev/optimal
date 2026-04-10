@@ -36,45 +36,52 @@ export default function Welcome({ onStart, onPrivacy, isLeaving }) {
           width: 'min(240px, 64vw)',
           aspectRatio: '240 / 148',
           borderRadius: 18,
-          background: 'linear-gradient(135deg, #0B2A6B 0%, #1B4FBB 55%, #3A72D4 100%)',
-          boxShadow: '0 24px 60px rgba(15, 50, 130, 0.28), 0 4px 16px rgba(15, 50, 130, 0.14)',
+          background: 'linear-gradient(145deg, #F0F4F8 0%, #D8E0EA 40%, #E8EDF4 70%, #BEC8D6 100%)',
+          boxShadow: '0 24px 60px rgba(0, 0, 0, 0.45), 0 4px 16px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255,255,255,0.9)',
           position: 'relative',
           marginBottom: 52,
           animation: 'cardFloat 4s ease-in-out infinite',
-          border: '1px solid rgba(255,255,255,0.15)',
+          border: '1px solid rgba(255,255,255,0.6)',
           overflow: 'hidden',
           flexShrink: 0,
         }}>
+          {/* Gloss sweep */}
           <div style={{
             position: 'absolute', inset: 0,
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 55%)',
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.1) 45%, transparent 60%)',
+            pointerEvents: 'none',
+          }} />
+          {/* Subtle lower reflection */}
+          <div style={{
+            position: 'absolute', bottom: 0, left: 0, right: 0, height: '40%',
+            background: 'linear-gradient(to top, rgba(255,255,255,0.18) 0%, transparent 100%)',
             pointerEvents: 'none',
           }} />
           <div style={{
             position: 'absolute', top: 20, left: 22,
             fontFamily: 'var(--font-display)',
             fontSize: '0.85rem', fontWeight: 700,
-            color: 'rgba(255,255,255,0.95)',
+            color: 'rgba(30,50,80,0.85)',
             letterSpacing: '-0.01em',
           }}>optimal</div>
           <div style={{
             position: 'absolute', bottom: 42, left: 22,
             width: 30, height: 22, borderRadius: 4,
-            background: 'rgba(255,255,255,0.22)',
-            border: '1px solid rgba(255,255,255,0.3)',
+            background: 'linear-gradient(135deg, #C8A96A 0%, #E8CC88 50%, #B89050 100%)',
+            border: '1px solid rgba(255,255,255,0.4)',
           }} />
           <div style={{
             position: 'absolute', bottom: 24, left: 22,
             fontFamily: 'monospace', fontSize: '0.68rem',
-            letterSpacing: '0.18em', color: 'rgba(255,255,255,0.35)',
+            letterSpacing: '0.18em', color: 'rgba(30,50,80,0.35)',
           }}>•••• •••• •••• ••••</div>
           <div style={{
             position: 'absolute', bottom: 20, right: 20,
             display: 'flex', alignItems: 'center',
           }}>
             <div style={{ display: 'flex', position: 'relative', width: 34, height: 22 }}>
-              <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'rgba(255,80,80,0.65)', position: 'absolute', left: 0 }} />
-              <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'rgba(255,160,50,0.65)', position: 'absolute', left: 12 }} />
+              <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'rgba(200,60,60,0.55)', position: 'absolute', left: 0 }} />
+              <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'rgba(220,140,30,0.55)', position: 'absolute', left: 12 }} />
             </div>
           </div>
         </div>
