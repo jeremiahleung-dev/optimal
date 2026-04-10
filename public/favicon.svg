@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Wallet body -->
+  <rect x="2" y="10" width="28" height="17" rx="4" fill="#5B47F5"/>
+  <!-- Top flap (darker) -->
+  <rect x="2" y="10" width="28" height="5" rx="4" fill="#3730A3"/>
+  <rect x="2" y="13" width="28" height="2" fill="#3730A3"/>
+  <!-- Card pocket -->
+  <rect x="17" y="15" width="10" height="7" rx="2.5" fill="rgba(255,255,255,0.28)"/>
+  <!-- Coin in pocket -->
+  <circle cx="22" cy="18.5" r="2" fill="rgba(255,255,255,0.45)"/>
+</svg>

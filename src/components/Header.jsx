@@ -29,49 +29,6 @@ export default function Header({ theme, onToggleTheme, onHome, savedCount = 0, o
         optimal
       </button>
 
-      {/* My Cards tab */}
-      <button
-        onClick={onMyCards}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-          fontFamily: 'var(--font)',
-          fontSize: '0.82rem',
-          fontWeight: 500,
-          color: savedCount > 0 ? 'var(--text-primary)' : 'var(--text-muted)',
-          background: 'none',
-          border: '1px solid var(--card-border)',
-          borderRadius: 20,
-          padding: '6px 14px',
-          cursor: 'pointer',
-          minHeight: 36,
-          transition: 'border-color 0.2s, color 0.2s',
-          flexShrink: 0,
-        }}
-        onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--text-muted)'}
-        onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--card-border)'}
-      >
-        My Cards
-        {savedCount > 0 && (
-          <span style={{
-            background: 'var(--accent)',
-            color: '#fff',
-            borderRadius: '50%',
-            minWidth: 18,
-            height: 18,
-            fontSize: '0.68rem',
-            fontWeight: 700,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '0 4px',
-          }}>
-            {savedCount}
-          </span>
-        )}
-      </button>
-
       <button
         onClick={onToggleTheme}
         aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
@@ -108,6 +65,49 @@ export default function Header({ theme, onToggleTheme, onHome, savedCount = 0, o
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
           </svg>
+        )}
+      </button>
+
+      {/* My Cards tab — far right */}
+      <button
+        onClick={onMyCards}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+          fontFamily: 'var(--font)',
+          fontSize: '0.82rem',
+          fontWeight: 500,
+          color: savedCount > 0 ? 'var(--text-primary)' : 'var(--text-muted)',
+          background: 'none',
+          border: '1px solid var(--card-border)',
+          borderRadius: 8,
+          padding: '6px 14px',
+          cursor: 'pointer',
+          minHeight: 36,
+          transition: 'border-color 0.2s, color 0.2s',
+          flexShrink: 0,
+        }}
+        onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--text-muted)'}
+        onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--card-border)'}
+      >
+        My Cards
+        {savedCount > 0 && (
+          <span style={{
+            background: 'var(--accent)',
+            color: '#fff',
+            borderRadius: '50%',
+            minWidth: 18,
+            height: 18,
+            fontSize: '0.68rem',
+            fontWeight: 700,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '0 4px',
+          }}>
+            {savedCount}
+          </span>
         )}
       </button>
     </header>

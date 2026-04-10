@@ -1,0 +1,69 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0A0A14"/>
+      <stop offset="100%" stop-color="#14142A"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="820" cy="315" r="380" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgba(91,71,245,0.18)"/>
+      <stop offset="100%" stop-color="rgba(91,71,245,0)"/>
+    </radialGradient>
+    <linearGradient id="cardGrad" x1="660" y1="155" x2="1120" y2="465" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#3730A3"/>
+      <stop offset="50%" stop-color="#5B47F5"/>
+      <stop offset="100%" stop-color="#A78BFA"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.18)"/>
+      <stop offset="50%" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="20" stdDeviation="30" flood-color="rgba(91,71,245,0.35)"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- Subtle dot grid (left half) -->
+  <pattern id="dots" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+    <circle cx="1" cy="1" r="1" fill="rgba(255,255,255,0.04)"/>
+  </pattern>
+  <rect width="600" height="630" fill="url(#dots)"/>
+
+  <!-- Left accent bar -->
+  <rect x="80" y="230" width="3" height="170" rx="1.5" fill="#5B47F5" opacity="0.7"/>
+
+  <!-- "optimal" wordmark -->
+  <text x="104" y="310" font-family="Georgia, 'Times New Roman', serif" font-size="90" font-weight="700" fill="#FFFFFF" letter-spacing="-3" opacity="0.97">optimal</text>
+
+  <!-- Tagline -->
+  <text x="104" y="368" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="30" font-weight="400" fill="rgba(255,255,255,0.58)">Find your perfect credit card.</text>
+
+  <!-- Sub-copy -->
+  <text x="104" y="415" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="20" font-weight="400" fill="rgba(255,255,255,0.28)">Six questions. Personalized. Free. No data stored.</text>
+
+  <!-- Credit card visual (rotated) -->
+  <g transform="rotate(-7, 900, 315)">
+    <rect x="660" y="155" width="460" height="284" rx="22" fill="url(#cardGrad)" filter="url(#cardShadow)"/>
+    <!-- Sheen overlay -->
+    <rect x="660" y="155" width="460" height="284" rx="22" fill="url(#sheen)"/>
+    <!-- border -->
+    <rect x="660" y="155" width="460" height="284" rx="22" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+    <!-- Card brand -->
+    <text x="700" y="202" font-family="Georgia, serif" font-size="22" font-weight="700" fill="rgba(255,255,255,0.92)" letter-spacing="-0.5">optimal</text>
+    <!-- Chip -->
+    <rect x="700" y="240" width="50" height="38" rx="6" fill="rgba(255,255,255,0.20)" stroke="rgba(255,255,255,0.30)" stroke-width="1.5"/>
+    <line x1="725" y1="240" x2="725" y2="278" stroke="rgba(255,255,255,0.20)" stroke-width="1"/>
+    <line x1="700" y1="259" x2="750" y2="259" stroke="rgba(255,255,255,0.20)" stroke-width="1"/>
+    <!-- Card number -->
+    <text x="700" y="355" font-family="'Courier New', Courier, monospace" font-size="17" fill="rgba(255,255,255,0.35)" letter-spacing="5">•••• •••• •••• ••••</text>
+    <!-- Mastercard-style circles -->
+    <circle cx="1068" cy="390" r="22" fill="rgba(255,80,80,0.62)"/>
+    <circle cx="1091" cy="390" r="22" fill="rgba(255,170,50,0.62)"/>
+  </g>
+
+  <!-- Bottom URL -->
+  <text x="104" y="572" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="17" fill="rgba(255,255,255,0.18)" letter-spacing="0.3">optimal-zeta.vercel.app</text>
+</svg>
