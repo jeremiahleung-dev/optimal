@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { cards as allCards } from '../data/cards'
 
 const ISSUER_ORDER = [
@@ -186,11 +186,101 @@ function IssuerAccordion({ issuer, cards, selected, onToggle }) {
   )
 }
 
+// ── Highlight matched substring ──────────────────────────────────────────────
+function Highlight({ text, query }) {
+  if (!query) return text
+  const idx = text.toLowerCase().indexOf(query.toLowerCase())
+  if (idx === -1) return text
+  return (
+    <>
+      {text.slice(0, idx)}
+      <span style={{ color: 'var(--accent)', fontWeight: 600 }}>
+        {text.slice(idx, idx + query.length)}
+      </span>
+      {text.slice(idx + query.length)}
+    </>
+  )
+}
+
+// ── Search result row ────────────────────────────────────────────────────────
+function SearchResultRow({ card, query, checked, onToggle, isLast }) {
+  return (
+    <div style={{ borderBottom: isLast ? 'none' : '1px solid var(--card-border)' }}>
+      <label style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 12,
+        cursor: 'pointer',
+        padding: '11px 16px',
+        userSelect: 'none',
+      }}>
+        <input type="checkbox" checked={checked} onChange={onToggle} style={{ display: 'none' }} />
+        <div style={{
+          width: 18,
+          height: 18,
+          borderRadius: 4,
+          flexShrink: 0,
+          border: `1.5px solid ${checked ? 'var(--accent)' : 'var(--card-border)'}`,
+          background: checked ? 'var(--accent)' : 'transparent',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'all 0.15s ease',
+        }}>
+          {checked && (
+            <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+              <path d="M1 3.5L3.8 6.5L9 1" stroke="#fff" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          )}
+        </div>
+        <div>
+          <p style={{
+            fontFamily: 'var(--font)',
+            fontSize: '0.88rem',
+            color: 'var(--text-primary)',
+            lineHeight: 1.4,
+          }}>
+            <Highlight text={card.displayName} query={query} />
+          </p>
+          <p style={{
+            fontFamily: 'var(--font)',
+            fontSize: '0.75rem',
+            color: 'var(--text-muted)',
+            marginTop: 1,
+          }}>
+            {card.issuer}
+          </p>
+        </div>
+      </label>
+    </div>
+  )
+}
+
 // ── Main component ───────────────────────────────────────────────────────────
 export default function WalletStep({ animState, onComplete }) {
   const [selected, setSelected] = useState(loadWallet)
   const [noneOfAbove, setNoneOfAbove] = useState(false)
   const [otherText, setOtherText] = useState('')
+  const [query, setQuery] = useState('')
+  const searchRef = useRef(null)
+
+  // Flat list with pre-computed display names for fast filtering
+  const allCardsMapped = useMemo(() =>
+    allCards.map(card => ({
+      ...card,
+      displayName: walletDisplayName(card.name, card.issuer),
+    })),
+  [])
+
+  const searchResults = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    if (!q) return []
+    return allCardsMapped.filter(card =>
+      card.displayName.toLowerCase().includes(q) ||
+      card.name.toLowerCase().includes(q) ||
+      card.issuer.toLowerCase().includes(q)
+    )
+  }, [query, allCardsMapped])
 
   const byIssuer = useMemo(() => {
     const groups = {}
@@ -256,16 +346,101 @@ export default function WalletStep({ animState, onComplete }) {
           </p>
         </div>
 
-        {/* Issuer accordions */}
-        {byIssuer.map(({ issuer, cards }) => (
-          <IssuerAccordion
-            key={issuer}
-            issuer={issuer}
-            cards={cards}
-            selected={selected}
-            onToggle={toggleCard}
+        {/* Search box */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10,
+          border: '1px solid var(--card-border)',
+          borderRadius: 12,
+          padding: '11px 14px',
+          background: 'var(--surface)',
+          marginBottom: 16,
+        }}>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
+            <circle cx="7" cy="7" r="5" stroke="var(--text-muted)" strokeWidth="1.5"/>
+            <path d="M11 11L14 14" stroke="var(--text-muted)" strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+          <input
+            ref={searchRef}
+            type="text"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            placeholder="Search cards…"
+            style={{
+              flex: 1,
+              fontFamily: 'var(--font)',
+              fontSize: '0.92rem',
+              color: 'var(--text-primary)',
+              background: 'transparent',
+              border: 'none',
+              outline: 'none',
+              lineHeight: 1.5,
+            }}
           />
-        ))}
+          {query && (
+            <button
+              onClick={() => { setQuery(''); searchRef.current?.focus() }}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '2px 4px',
+                color: 'var(--text-muted)',
+                fontSize: '1rem',
+                lineHeight: 1,
+                display: 'flex',
+                alignItems: 'center',
+              }}
+              aria-label="Clear search"
+            >
+              ×
+            </button>
+          )}
+        </div>
+
+        {/* Search results OR issuer accordions */}
+        {query.trim() ? (
+          <div style={{
+            border: '1px solid var(--card-border)',
+            borderRadius: 12,
+            overflow: 'hidden',
+            marginBottom: 8,
+          }}>
+            {searchResults.length > 0 ? (
+              searchResults.map((card, i) => (
+                <SearchResultRow
+                  key={card.id}
+                  card={card}
+                  query={query.trim()}
+                  checked={selected.has(card.id)}
+                  onToggle={() => toggleCard(card.id)}
+                  isLast={i === searchResults.length - 1}
+                />
+              ))
+            ) : (
+              <p style={{
+                fontFamily: 'var(--font)',
+                fontSize: '0.88rem',
+                color: 'var(--text-muted)',
+                padding: '16px',
+                textAlign: 'center',
+              }}>
+                No cards found
+              </p>
+            )}
+          </div>
+        ) : (
+          byIssuer.map(({ issuer, cards }) => (
+            <IssuerAccordion
+              key={issuer}
+              issuer={issuer}
+              cards={cards}
+              selected={selected}
+              onToggle={toggleCard}
+            />
+          ))
+        )}
 
         {/* Divider */}
         <div style={{ borderTop: '1px solid var(--card-border)', margin: '20px 0' }} />
