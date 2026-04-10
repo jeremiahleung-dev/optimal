@@ -10,6 +10,7 @@ import { trackEvent, Events } from './utils/track'
 export default function App() {
   const [theme, setTheme] = useState('light')
   const [screen, setScreen] = useState('welcome')
+  const [leaving, setLeaving] = useState(false)
   const [recommendations, setRecommendations] = useState([])
   const [answers, setAnswers] = useState({})
   const [showPrivacy, setShowPrivacy] = useState(false)
@@ -22,7 +23,11 @@ export default function App() {
 
   const handleStart = () => {
     trackEvent(Events.SURVEY_STARTED)
-    setScreen('survey')
+    setLeaving(true)
+    setTimeout(() => {
+      setScreen('survey')
+      setLeaving(false)
+    }, 320)
   }
 
   const handleSurveyComplete = (surveyAnswers) => {
@@ -53,7 +58,7 @@ export default function App() {
       <Header theme={theme} onToggleTheme={handleToggleTheme} onHome={handleRestart} />
 
       {screen === 'welcome' && (
-        <Welcome onStart={handleStart} onPrivacy={handleOpenPrivacy} />
+        <Welcome onStart={handleStart} onPrivacy={handleOpenPrivacy} isLeaving={leaving} />
       )}
       {screen === 'survey' && (
         <Survey onComplete={handleSurveyComplete} />

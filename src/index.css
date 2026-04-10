@@ -98,12 +98,18 @@ html, body {
   50%       { transform: translateY(-10px) rotate(1deg); }
 }
 
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
 .anim-slide-in-right  { animation: slideInRight  0.38s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 .anim-slide-out-left  { animation: slideOutLeft  0.32s cubic-bezier(0.55, 0, 1, 0.45) forwards; }
 .anim-slide-in-left   { animation: slideInLeft   0.38s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 .anim-slide-out-right { animation: slideOutRight 0.32s cubic-bezier(0.55, 0, 1, 0.45) forwards; }
 .anim-fade-up         { animation: fadeUp        0.5s  cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 .anim-fade-in         { animation: fadeIn        0.4s  ease forwards; }
+.anim-fade-out        { animation: fadeOut       0.3s  ease forwards; }
 
 /* ── Card detail two-column layout ── */
 .card-detail-grid {

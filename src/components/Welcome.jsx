@@ -7,17 +7,20 @@ const steps = [
   { n: '03', label: 'Get a ranked list of cards matched specifically to you' },
 ]
 
-export default function Welcome({ onStart, onPrivacy }) {
+export default function Welcome({ onStart, onPrivacy, isLeaving }) {
   const [hovered, setHovered] = useState(false)
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      backgroundImage: 'radial-gradient(circle, var(--card-border) 1px, transparent 1px)',
-      backgroundSize: '28px 28px',
-    }}>
+    <div
+      className={isLeaving ? 'anim-fade-out' : ''}
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundImage: 'radial-gradient(circle, var(--card-border) 1px, transparent 1px)',
+        backgroundSize: '28px 28px',
+      }}
+    >
       <div style={{
         flex: 1,
         display: 'flex',

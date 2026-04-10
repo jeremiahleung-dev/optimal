@@ -44,7 +44,7 @@ export default function Survey({ onComplete }) {
   }, [index])
 
   return (
-    <div style={{
+    <div className="anim-fade-in" style={{
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',
