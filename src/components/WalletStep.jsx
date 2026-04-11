@@ -1,5 +1,6 @@
 import { useState, useMemo, useRef } from 'react'
 import { cards as allCards } from '../data/cards'
+import { trackEvent, Events } from '../utils/track'
 
 const ISSUER_ORDER = [
   'Capital One',
@@ -109,6 +110,12 @@ function IssuerAccordion({ issuer, cards, selected, onToggle }) {
   const [open, setOpen] = useState(false)
   const selectedCount = cards.filter(c => selected.has(c.id)).length
 
+  const handleToggle = () => {
+    const opening = !open
+    setOpen(opening)
+    if (opening) trackEvent(Events.WALLET_ACCORDION_OPENED, { issuer })
+  }
+
   return (
     <div style={{
       border: '1px solid var(--card-border)',
@@ -117,7 +124,7 @@ function IssuerAccordion({ issuer, cards, selected, onToggle }) {
       marginBottom: 8,
     }}>
       <button
-        onClick={() => setOpen(o => !o)}
+        onClick={handleToggle}
         style={{
           width: '100%',
           display: 'flex',
@@ -263,6 +270,7 @@ export default function WalletStep({ animState, onComplete }) {
   const [otherText, setOtherText] = useState('')
   const [query, setQuery] = useState('')
   const searchRef = useRef(null)
+  const searchDebounceRef = useRef(null)
 
   // Flat list with pre-computed display names for fast filtering
   const allCardsMapped = useMemo(() =>
@@ -297,9 +305,11 @@ export default function WalletStep({ animState, onComplete }) {
     setNoneOfAbove(false)
     setSelected(prev => {
       const next = new Set(prev)
-      if (next.has(id)) next.delete(id)
+      const action = next.has(id) ? 'remove' : 'add'
+      if (action === 'remove') next.delete(id)
       else next.add(id)
       saveWallet(next)
+      trackEvent(Events.WALLET_CARD_TOGGLED, { card_id: id, action })
       return next
     })
   }
@@ -308,6 +318,7 @@ export default function WalletStep({ animState, onComplete }) {
     const next = !noneOfAbove
     setNoneOfAbove(next)
     if (next) {
+      trackEvent(Events.WALLET_NONE_SELECTED)
       setSelected(new Set())
       saveWallet(new Set())
     }
@@ -365,7 +376,15 @@ export default function WalletStep({ animState, onComplete }) {
             ref={searchRef}
             type="text"
             value={query}
-            onChange={e => setQuery(e.target.value)}
+            onChange={e => {
+              setQuery(e.target.value)
+              clearTimeout(searchDebounceRef.current)
+              if (e.target.value.trim()) {
+                searchDebounceRef.current = setTimeout(() => {
+                  trackEvent(Events.WALLET_SEARCH_USED, { query_length: e.target.value.trim().length })
+                }, 800)
+              }
+            }}
             placeholder="Search cards…"
             style={{
               flex: 1,

@@ -91,24 +91,29 @@ export default function App() {
 
   const handleOpenCompare = () => {
     trackEvent(Events.COMPARE_OPENED, { count: savedIds.length })
+    trackEvent(Events.COMPARE_VIEWED, { count: savedIds.length })
     setScreen('compare')
   }
 
   const handleOpenMyCards = () => {
+    trackEvent(Events.MY_CARDS_VIEWED, { count: savedIds.length })
     setScreen('my-cards')
   }
 
   const handleRemoveFromCompare = (cardId) => {
+    trackEvent(Events.CARD_REMOVED_FROM_COMPARE, { card_id: cardId })
     const updated = toggleSaved(cardId, savedIds)
     setSavedIds(updated)
   }
 
   const handleClearAll = () => {
+    trackEvent(Events.COMPARE_CLEARED, { count: savedIds.length })
     setSavedIds(clearSaved())
     setScreen('results')
   }
 
   const handleClearAllMyCards = () => {
+    trackEvent(Events.COMPARE_CLEARED, { count: savedIds.length })
     setSavedIds(clearSaved())
     // Stay on my-cards — empty state renders automatically
   }

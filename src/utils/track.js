@@ -14,16 +14,27 @@ export function trackEvent(name, properties = {}) {
 
 // Named events — kept centralised so refactoring is trivial
 export const Events = {
-  SURVEY_STARTED:          'survey_started',
-  WALLET_STEP_COMPLETED:   'wallet_step_completed',
-  QUESTION_ANSWERED:       'question_answered',
-  RESULTS_VIEWED:          'results_viewed',
-  CARD_EXPANDED:           'card_expanded',
-  CARD_COLLAPSED:          'card_collapsed',
-  APPLY_CLICKED:           'apply_clicked',
-  SURVEY_RESTARTED:        'survey_restarted',
-  PRIVACY_VIEWED:          'privacy_viewed',
-  CARD_SAVED:              'card_saved',
-  CARD_UNSAVED:            'card_unsaved',
-  COMPARE_OPENED:          'compare_opened',
+  SURVEY_STARTED:              'survey_started',
+  WALLET_STEP_COMPLETED:       'wallet_step_completed',
+  QUESTION_ANSWERED:           'question_answered',
+  RESULTS_VIEWED:              'results_viewed',
+  CARD_EXPANDED:               'card_expanded',
+  CARD_COLLAPSED:              'card_collapsed',
+  APPLY_CLICKED:               'apply_clicked',
+  SURVEY_RESTARTED:            'survey_restarted',
+  PRIVACY_VIEWED:              'privacy_viewed',
+  CARD_SAVED:                  'card_saved',
+  CARD_UNSAVED:                'card_unsaved',
+  COMPARE_OPENED:              'compare_opened',
+  // Screen views
+  COMPARE_VIEWED:              'compare_viewed',
+  MY_CARDS_VIEWED:             'my_cards_viewed',
+  // WalletStep interactions
+  WALLET_SEARCH_USED:          'wallet_search_used',
+  WALLET_CARD_TOGGLED:         'wallet_card_toggled',
+  WALLET_NONE_SELECTED:        'wallet_none_selected',
+  WALLET_ACCORDION_OPENED:     'wallet_accordion_opened',
+  // Compare / My Cards actions
+  CARD_REMOVED_FROM_COMPARE:   'card_removed_from_compare',
+  COMPARE_CLEARED:             'compare_cleared',
 }
