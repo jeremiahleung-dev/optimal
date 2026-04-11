@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { getMatchReasons } from '../utils/recommend'
 import { trackEvent, Events } from '../utils/track'
 import CardVisual from './CardVisual'
@@ -19,6 +19,8 @@ function BookmarkIcon({ filled }) {
 
 export default function Results({ recommendations, answers, savedIds, onToggleSave, onCompare, onRestart, onPrivacy }) {
   const [expanded, setExpanded] = useState(0)
+
+  useEffect(() => { window.scrollTo(0, 0) }, [])
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
