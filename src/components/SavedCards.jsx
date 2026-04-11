@@ -209,10 +209,13 @@ export default function SavedCards({ savedIds, onRemove, onClearAll, onBack, tit
   if (savedCards.length === 0) return <EmptyState onBack={onBack} backLabel={backLabel} emptyMessage={emptyMessage} />
 
   const cardGrid = {
-    display: 'grid',
-    gridTemplateColumns: `repeat(auto-fill, minmax(min(220px, 100%), 1fr))`,
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
     gap: 10,
   }
+
+  const cellStyle = { flex: '1 1 220px', maxWidth: 280 }
 
   return (
     <div style={{
@@ -310,7 +313,7 @@ export default function SavedCards({ savedIds, onRemove, onClearAll, onBack, tit
       <SectionLabel>Annual Fee</SectionLabel>
       <div style={cardGrid}>
         {savedCards.map(card => (
-          <CardCell key={card.id}>
+          <CardCell key={card.id} style={cellStyle}>
             <CardCellLabel name={card.name} />
             <p style={{
               fontFamily: 'var(--font)',
@@ -372,7 +375,7 @@ export default function SavedCards({ savedIds, onRemove, onClearAll, onBack, tit
       <SectionLabel>Key Benefits</SectionLabel>
       <div style={cardGrid}>
         {savedCards.map(card => (
-          <CardCell key={card.id}>
+          <CardCell key={card.id} style={cellStyle}>
             <CardCellLabel name={card.name} />
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
               {card.keyBenefits.map((b, i) => (
@@ -399,7 +402,7 @@ export default function SavedCards({ savedIds, onRemove, onClearAll, onBack, tit
           <SectionLabel>Rating</SectionLabel>
           <div style={cardGrid}>
             {savedCards.map(card => (
-              <CardCell key={card.id}>
+              <CardCell key={card.id} style={cellStyle}>
                 <CardCellLabel name={card.name} />
                 {card.rating ? (
                   <div>
@@ -439,7 +442,7 @@ export default function SavedCards({ savedIds, onRemove, onClearAll, onBack, tit
           <SectionLabel>Apply</SectionLabel>
           <div style={cardGrid}>
             {savedCards.map(card => (
-              <div key={card.id}>
+              <div key={card.id} style={cellStyle}>
                 {card.applyUrl ? (
                   <a
                     href={card.applyUrl}
