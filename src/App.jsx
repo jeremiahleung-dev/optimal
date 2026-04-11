@@ -146,6 +146,7 @@ export default function App() {
       {screen === 'compare' && (
         <SavedCards
           savedIds={savedIds}
+          scoreMap={Object.fromEntries(recommendations.map(c => [c.id, c.score]))}
           onRemove={handleRemoveFromCompare}
           onClearAll={handleClearAll}
           onBack={() => setScreen('results')}
@@ -155,6 +156,7 @@ export default function App() {
       {screen === 'my-cards' && (
         <SavedCards
           savedIds={savedIds}
+          scoreMap={Object.fromEntries(recommendations.map(c => [c.id, c.score]))}
           onRemove={handleRemoveFromCompare}
           onClearAll={handleClearAllMyCards}
           onBack={() => setScreen(recommendations.length > 0 ? 'results' : 'welcome')}

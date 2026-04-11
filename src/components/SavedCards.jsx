@@ -148,6 +148,26 @@ function CardCellLabel({ name }) {
   )
 }
 
+// ── Best pill ────────────────────────────────────────────────────────────────
+function BestPill() {
+  return (
+    <span style={{
+      display: 'inline-block',
+      fontFamily: 'var(--font)',
+      fontSize: '0.68rem',
+      fontWeight: 700,
+      letterSpacing: '0.06em',
+      color: 'var(--accent)',
+      background: 'var(--accent-dim)',
+      borderRadius: 20,
+      padding: '2px 8px',
+      marginBottom: 6,
+    }}>
+      ✓ Best
+    </span>
+  )
+}
+
 // ── Empty state ─────────────────────────────────────────────────────────────
 function EmptyState({ onBack, backLabel = '← Back to results', emptyMessage = 'Tap the bookmark icon on any result card to save it here for comparison.' }) {
   return (
@@ -200,7 +220,7 @@ function EmptyState({ onBack, backLabel = '← Back to results', emptyMessage = 
 }
 
 // ── Main component ──────────────────────────────────────────────────────────
-export default function SavedCards({ savedIds, onRemove, onClearAll, onBack, title = 'Compare', emptyMessage, backLabel }) {
+export default function SavedCards({ savedIds, scoreMap = {}, onRemove, onClearAll, onBack, title = 'Compare', emptyMessage, backLabel }) {
   const [applyHovered, setApplyHovered] = useState(null)
 
   const savedCards = savedIds
@@ -208,6 +228,14 @@ export default function SavedCards({ savedIds, onRemove, onClearAll, onBack, tit
     .filter(Boolean)
 
   if (savedCards.length === 0) return <EmptyState onBack={onBack} backLabel={backLabel} emptyMessage={emptyMessage} />
+
+  // ── Clear winner logic ───────────────────────────────────────────────────
+  const ranked = [...savedCards]
+    .map(c => ({ id: c.id, score: scoreMap[c.id] ?? 0 }))
+    .sort((a, b) => b.score - a.score)
+  const gap = ranked.length >= 2 ? ranked[0].score - ranked[1].score : 999
+  const winnerCardId = ranked.length >= 2 && ranked[0].score > 0 && gap >= 10 ? ranked[0].id : null
+  const winnerCard = winnerCardId ? savedCards.find(c => c.id === winnerCardId) : null
 
   const cardGrid = {
     display: 'flex',
@@ -217,6 +245,11 @@ export default function SavedCards({ savedIds, onRemove, onClearAll, onBack, tit
   }
 
   const cellStyle = { flex: '1 1 220px', maxWidth: 280 }
+  const winnerCellStyle = {
+    ...cellStyle,
+    border: '1.5px solid var(--accent)',
+    boxShadow: '0 0 0 3px var(--accent-dim)',
+  }
 
   return (
     <div style={{
@@ -310,22 +343,51 @@ export default function SavedCards({ savedIds, onRemove, onClearAll, onBack, tit
         ))}
       </div>
 
+      {/* Clear winner banner */}
+      {winnerCard && (
+        <div style={{
+          marginTop: 16,
+          padding: '14px 18px',
+          borderRadius: 12,
+          border: '1.5px solid var(--accent)',
+          background: 'var(--accent-dim)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10,
+        }}>
+          <span style={{ fontSize: '1rem', flexShrink: 0 }}>✓</span>
+          <p style={{
+            fontFamily: 'var(--font)',
+            fontSize: '0.92rem',
+            fontWeight: 500,
+            color: 'var(--text-primary)',
+            lineHeight: 1.4,
+          }}>
+            Based on your profile, <strong>{winnerCard.name}</strong> is your clear winner.
+          </p>
+        </div>
+      )}
+
       {/* ── Annual Fee ── */}
       <SectionLabel>Annual Fee</SectionLabel>
       <div style={cardGrid}>
-        {savedCards.map(card => (
-          <CardCell key={card.id} style={cellStyle}>
-            <CardCellLabel name={card.name} />
-            <p style={{
-              fontFamily: 'var(--font)',
-              fontSize: '1.1rem',
-              fontWeight: 700,
-              color: card.annualFee === 0 ? 'var(--accent)' : 'var(--text-primary)',
-            }}>
-              {card.annualFee === 0 ? 'No fee' : `$${card.annualFee}/yr`}
-            </p>
-          </CardCell>
-        ))}
+        {savedCards.map(card => {
+          const isWinner = card.id === winnerCardId
+          return (
+            <CardCell key={card.id} style={isWinner ? winnerCellStyle : cellStyle}>
+              {isWinner && <BestPill />}
+              <CardCellLabel name={card.name} />
+              <p style={{
+                fontFamily: 'var(--font)',
+                fontSize: '1.1rem',
+                fontWeight: 700,
+                color: card.annualFee === 0 ? 'var(--accent)' : 'var(--text-primary)',
+              }}>
+                {card.annualFee === 0 ? 'No fee' : `$${card.annualFee}/yr`}
+              </p>
+            </CardCell>
+          )
+        })}
       </div>
 
       {/* ── Rewards ── */}
@@ -375,8 +437,11 @@ export default function SavedCards({ savedIds, onRemove, onClearAll, onBack, tit
       {/* ── Key Benefits ── */}
       <SectionLabel>Key Benefits</SectionLabel>
       <div style={cardGrid}>
-        {savedCards.map(card => (
-          <CardCell key={card.id} style={cellStyle}>
+        {savedCards.map(card => {
+          const isWinner = card.id === winnerCardId
+          return (
+          <CardCell key={card.id} style={isWinner ? winnerCellStyle : cellStyle}>
+            {isWinner && <BestPill />}
             <CardCellLabel name={card.name} />
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
               {card.keyBenefits.map((b, i) => (
@@ -394,7 +459,8 @@ export default function SavedCards({ savedIds, onRemove, onClearAll, onBack, tit
               ))}
             </ul>
           </CardCell>
-        ))}
+          )
+        })}
       </div>
 
       {/* ── Rating ── */}
@@ -402,8 +468,11 @@ export default function SavedCards({ savedIds, onRemove, onClearAll, onBack, tit
         <>
           <SectionLabel>Rating</SectionLabel>
           <div style={cardGrid}>
-            {savedCards.map(card => (
-              <CardCell key={card.id} style={cellStyle}>
+            {savedCards.map(card => {
+              const isWinner = card.id === winnerCardId
+              return (
+              <CardCell key={card.id} style={isWinner ? winnerCellStyle : cellStyle}>
+                {isWinner && <BestPill />}
                 <CardCellLabel name={card.name} />
                 {card.rating ? (
                   <div>
@@ -432,7 +501,8 @@ export default function SavedCards({ savedIds, onRemove, onClearAll, onBack, tit
                   </p>
                 )}
               </CardCell>
-            ))}
+              )
+            })}
           </div>
         </>
       )}
@@ -443,7 +513,7 @@ export default function SavedCards({ savedIds, onRemove, onClearAll, onBack, tit
           <SectionLabel>Apply</SectionLabel>
           <div style={cardGrid}>
             {savedCards.map(card => (
-              <div key={card.id} style={cellStyle}>
+              <div key={card.id} style={card.id === winnerCardId ? winnerCellStyle : cellStyle}>
                 {card.applyUrl ? (
                   <a
                     href={card.applyUrl}
