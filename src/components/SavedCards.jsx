@@ -326,27 +326,10 @@ export default function SavedCards({ savedIds, scoreMap = {}, onRemove, onClearA
         </button>
       </div>
 
-      {/* Card chips — centered */}
-      <div style={{
-        display: 'flex',
-        gap: 10,
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        marginBottom: 4,
-      }}>
-        {savedCards.map(card => (
-          <CardChip
-            key={card.id}
-            card={card}
-            onRemove={() => onRemove(card.id)}
-          />
-        ))}
-      </div>
-
       {/* Clear winner banner */}
       {winnerCard && (
         <div style={{
-          marginTop: 16,
+          marginBottom: 16,
           padding: '14px 18px',
           borderRadius: 12,
           border: '1.5px solid var(--accent)',
@@ -368,26 +351,21 @@ export default function SavedCards({ savedIds, scoreMap = {}, onRemove, onClearA
         </div>
       )}
 
-      {/* ── Annual Fee ── */}
-      <SectionLabel>Annual Fee</SectionLabel>
-      <div style={cardGrid}>
-        {savedCards.map(card => {
-          const isWinner = card.id === winnerCardId
-          return (
-            <CardCell key={card.id} style={isWinner ? winnerCellStyle : cellStyle}>
-              {isWinner && <BestPill />}
-              <CardCellLabel name={card.name} />
-              <p style={{
-                fontFamily: 'var(--font)',
-                fontSize: '1.1rem',
-                fontWeight: 700,
-                color: card.annualFee === 0 ? 'var(--accent)' : 'var(--text-primary)',
-              }}>
-                {card.annualFee === 0 ? 'No fee' : `$${card.annualFee}/yr`}
-              </p>
-            </CardCell>
-          )
-        })}
+      {/* Card chips — centered */}
+      <div style={{
+        display: 'flex',
+        gap: 10,
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        marginBottom: 4,
+      }}>
+        {savedCards.map(card => (
+          <CardChip
+            key={card.id}
+            card={card}
+            onRemove={() => onRemove(card.id)}
+          />
+        ))}
       </div>
 
       {/* ── Rewards ── */}
