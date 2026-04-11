@@ -135,7 +135,7 @@ function IssuerAccordion({ issuer, cards, selected, onToggle }) {
           fontFamily: 'var(--font)',
           fontSize: '0.92rem',
           fontWeight: 500,
-          color: 'var(--text-primary)',
+          color: open ? '#0B1A35' : 'var(--text-primary)',
         }}>
           {issuer}
         </span>
