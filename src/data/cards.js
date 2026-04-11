@@ -623,7 +623,7 @@ export const cards = [
   },
   {
     id: 'amex-platinum',
-    name: 'Amex Platinum Card®',
+    name: 'American Express Platinum Card',
     issuer: 'American Express',
     network: 'Amex',
     annualFee: 895,
