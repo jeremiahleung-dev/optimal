@@ -324,6 +324,12 @@ export default function WalletStep({ animState, onComplete }) {
     }
   }
 
+  const handleClearAll = () => {
+    setSelected(new Set())
+    setNoneOfAbove(false)
+    saveWallet(new Set())
+  }
+
   const handleContinue = () => onComplete(Array.from(selected))
 
   const count = selected.size
@@ -533,13 +539,32 @@ export default function WalletStep({ animState, onComplete }) {
         zIndex: 50,
       }}>
         {count > 0 && (
-          <p style={{
-            fontFamily: 'var(--font)',
-            fontSize: '0.88rem',
-            color: 'var(--text-muted)',
-          }}>
-            {count} card{count !== 1 ? 's' : ''} excluded
-          </p>
+          <>
+            <p style={{
+              fontFamily: 'var(--font)',
+              fontSize: '0.88rem',
+              color: 'var(--text-muted)',
+            }}>
+              {count} card{count !== 1 ? 's' : ''} excluded
+            </p>
+            <button
+              onClick={handleClearAll}
+              style={{
+                fontFamily: 'var(--font)',
+                fontSize: '0.88rem',
+                fontWeight: 500,
+                color: 'var(--text-muted)',
+                background: 'none',
+                border: '1px solid var(--card-border)',
+                borderRadius: 10,
+                padding: '10px 16px',
+                cursor: 'pointer',
+                minHeight: 44,
+              }}
+            >
+              Clear all
+            </button>
+          </>
         )}
         <button
           onClick={handleContinue}
